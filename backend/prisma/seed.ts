@@ -32,7 +32,7 @@ async function main() {
   await prisma.product.upsert({
     where: { sku: 'VET-001' },
     update: {},
-    create: { name: 'T-Shirt Premium', sku: 'VET-001', price: 29,99, costPrice: 8, quantity: 5, minQuantity: 10, categoryId: vetements.id },
+    create: { name: 'T-Shirt Premium', sku: 'VET-001', price: 29.99, costPrice: 8, quantity: 5, minQuantity: 10, categoryId: vetements.id },
   });
   await prisma.product.upsert({
     where: { sku: 'ALIM-001' },
