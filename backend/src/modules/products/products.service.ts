@@ -8,7 +8,7 @@ import { StockMovementDto } from './dto/stock-movement.dto';
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
 
-  findAll(q: { search: string; status: string; categoryId: string }) {
+  findAll(q: { search?: string; status?: string; categoryId?: string }) {
     const where: any = {};
     if (q.search) where.OR = [{ name: { contains: q.search } }, { sku: { contains: q.search } }];
     if (q.status === 'active') where.isActive = true;
