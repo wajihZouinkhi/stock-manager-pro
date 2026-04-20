@@ -1,24 +1,21 @@
-import type { Metadata } from 'next';
-import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
-import './globals.css';
-import { Toaster } from 'sonner';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
+import { AuthProvider } from "@/lib/auth-context";
+import "./globals.css";
+
+const sans = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: 'StockManager Pro - Gestion de stock',
-  description: 'Application moderne de gestion de stock',
+  title: "Stock Manager Pro",
+  description: "Gestion de stock moderne et intuitive",
 };
 
-const sans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-});
-
-export default function RootLayout({ children }: {children: React.ReactNode}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html lang="fr" className={sans.variable}>
       <body className={sans.variable}>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
         <Toaster position="top-right" richColors />
       </body>
     </html>
