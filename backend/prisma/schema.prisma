@@ -1,5 +1,11 @@
-generator client { provider = "prisma-client-js" }
-datasource db { provider = "sqlite" url = env("DATABASE_URL") }
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
 
 enum Role {
   ADMIN
@@ -17,6 +23,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   movements StockMovement[]
+
   @@index([email])
 }
 
@@ -48,6 +55,7 @@ model Product {
   movements   StockMovement[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+
   @@index([categoryId])
   @@index([sku])
   @@index([isActive, quantity])
@@ -63,6 +71,7 @@ model StockMovement {
   userId    Int?
   user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   createdAt DateTime @default(now())
+
   @@index([productId])
   @@index([createdAt])
 }
