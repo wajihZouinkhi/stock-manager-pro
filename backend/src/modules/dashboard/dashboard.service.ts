@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 
+type ProductValue = { price: number; quantity: number };
+type Movement = { createdAt: Date; type: string; quantity: number };
+
 @Injectable()
 export class DashboardService {
   constructor(private prisma: PrismaService) {}
@@ -21,7 +24,10 @@ export class DashboardService {
       take: 5,
     });
 
-    const totalValue = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
+    const totalValue = (products as ProductValue[]).reduce(
+      (acc: number, p: ProductValue) => acc + p.price * p.quantity,
+      0,
+    );
     const weeklyMovements = await this.getWeeklyMovements();
 
     return { totalProducts, lowStockCount: lowStock, outOfStockCount: outOfStock, totalValue, totalCategories, recentMovements, lowStockProducts, weeklyMovements };
@@ -32,7 +38,7 @@ export class DashboardService {
     weekAgo.setDate(weekAgo.getDate() - 7);
     const movements = await this.prisma.stockMovement.findMany({ where: { createdAt: { gte: weekAgo } }, orderBy: { createdAt: 'asc' } });
     const grouped = new Map<string, { in: number; out: number }>();
-    movements.forEach(m => {
+    (movements as Movement[]).forEach((m: Movement) => {
       const date = m.createdAt.toISOString().split('T')[0];
       if (!grouped.has(date)) grouped.set(date, { in: 0, out: 0 });
       if (m.type === 'IN') grouped.get(date)!.in += m.quantity;

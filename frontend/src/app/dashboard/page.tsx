@@ -36,7 +36,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="fleh h-screen">
+    <div className="flex h-screen">
       <Sidebar />
       <div className="flex-1 overflow-auto">
         <Topbar title="Tableau de bord" subtitle="Vue d'ensemble de votre stock" />
@@ -62,12 +62,12 @@ export default function DashboardPage() {
             })}
           </div>
 
-          {stats?.weeklyMovements.length > 0 && (
+          {(stats?.weeklyMovements?.length ?? 0) > 0 && (
             <Card>
               <CardHeader><CardTitle>Mouvements 7 derniers jours</CardTitle></CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={280}>
-                  <AreaChart data={stats.weeklyMovements}>
+                  <AreaChart data={stats?.weeklyMovements ?? []}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                     <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
                     <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />

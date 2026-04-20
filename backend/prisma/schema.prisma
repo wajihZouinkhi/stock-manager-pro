@@ -7,6 +7,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// SQLite does not support enums; use String with values: ADMIN | MANAGER | STAFF
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("STAFF")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  movements StockMovement[]
+
+  @@index([email])
+}
+
 model Category {
   id          Int       @id @default(autoincrement())
   name        String    @unique
@@ -19,29 +34,39 @@ model Category {
 }
 
 model Product {
-  id           Int            @id @default(autoincrement())
-  name         String
-  sku          String         @unique
-  description  String?
-  price        Float          @default(0)
-  costPrice    Float          @default(0)
-  quantity     Int            @default(0)
-  minQuantity  Int            @default(5)
-  unit         String         @default("pcs")
-  isActive     Boolean        @default(true)
-  categoryId   Int?
-  category     Category?      @relation(fields: [categoryId], references: [id])
-  movements    StockMovement[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String
+  sku         String    @unique
+  description String?
+  price       Float
+  costPrice   Float     @default(0)
+  quantity    Int       @default(0)
+  minQuantity Int       @default(5)
+  unit        String    @default("pcs")
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  movements   StockMovement[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([categoryId])
+  @@index([sku])
+  @@index([isActive, quantity])
 }
 
 model StockMovement {
-  id         Int       @id @default(autoincrement())
-  type       String    // IN, OUT, ADJUSTMENT
-  quantity   Int
-  reason     String?
-  productId  Int
-  product    Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
-  createdAt  DateTime  @default(now())
+  id        Int      @id @default(autoincrement())
+  type      String
+  quantity  Int
+  reason    String?
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@index([createdAt])
 }
