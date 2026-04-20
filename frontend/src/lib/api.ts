@@ -1,8 +1,7 @@
-// API client - typed fetch wrapper
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 async function apiRequest<T>(url: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASEG@{url}`, {
+  const res = await fetch(`${API_BASE}${url}`, {
     headers: { 'Content-Type': 'application/json', ...(options?.headers || {}) },
     ...options,
   });
@@ -13,52 +12,10 @@ async function apiRequest<T>(url: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
-export interface Category {
-  id: number;
-  name: string;
-  description?: string;
-  color: string;
-  icon?: string;
-  _count?: { products: number };
-}
-
-export interface Product {
-  id: number;
-  name: string;
-  sku: string;
-  description?: string;
-  price: number;
-  costPrice: number;
-  quantity: number;
-  minQuantity: number;
-  unit: string;
-  isActive: boolean;
-  categoryId?: number;
-  category?: Category;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface StockMovement {
-  id: number;
-  type: 'IN' | 'OUT' | 'ADJUSTMENT';
-  quantity: number;
-  reason?: string;
-  productId: number;
-  product?: Product;
-  createdAt: string;
-}
-
-export interface DashboardStats {
-  totalProducts: number;
-  lowStockCount: number;
-  outOfStockCount: number;
-  totalValue: number;
-  totalCategories: number;
-  recentMovements: StockMovement[];
-  lowStockProducts: Product[];
-  weeklyMovements: Array<{ date: string; in: number; out: number }>;
-}
+export interface Category { id: number; name: string; description?: string; color: string; icon?: string; _count?: { products: number }; }
+export interface Product { id: number; name: string; sku: string; description?: string; price: number; costPrice: number; quantity: number; minQuantity: number; unit: string; isActive: boolean; categoryId?: number; category?: Category; createdAt: string; updatedAt: string; }
+export interface StockMovement { id: number; type: 'IN' | 'OUT' | 'ADJUSTMENT'; quantity: number; reason?: string; productId: number; product?: Product; createdAt: string; }
+export interface DashboardStats { totalProducts: number; lowStockCount: number; outOfStockCount: number; totalValue: number; totalCategories: number; recentMovements: StockMovement[]; lowStockProducts: Product[]; weeklyMovements: Array<{ date: string; in: number; out: number }>; }
 
 export const productsApi = {
   getAll: (params?: { search?: string; status?: string; categoryId?: number }) => {
@@ -84,6 +41,4 @@ export const categoriesApi = {
   delete: (id: number) => apiRequest(`/categories/${id}`, { method: 'DELETE' }),
 };
 
-export const dashboardApi = {
-  getStats: () => apiRequest<DashboardStats>('/dashboard/stats'),
-};
+export const dashboardApi = { getStats: () => apiRequest<DashboardStats>('/dashboard/stats') };

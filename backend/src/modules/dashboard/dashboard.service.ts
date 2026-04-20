@@ -8,7 +8,7 @@ export class DashboardService {
   async getStats() {
     const [totalProducts, lowStock, outOfStock, products, totalCategories, recentMovements] = await Promise.all([
       this.prisma.product.count(),
-      this.prisma.product.count({ where: { isActive: true, quantity: { gt: 0, lt: { gt: 0 } } } }),
+      this.prisma.product.count({ where: { isActive: true, quantity: { gt: 0, lte: 5 } } }),
       this.prisma.product.count({ where: { quantity: 0 } }),
       this.prisma.product.findMany({ select: { price: true, quantity: true } }),
       this.prisma.category.count(),
@@ -22,7 +22,6 @@ export class DashboardService {
     });
 
     const totalValue = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
-
     const weeklyMovements = await this.getWeeklyMovements();
 
     return { totalProducts, lowStockCount: lowStock, outOfStockCount: outOfStock, totalValue, totalCategories, recentMovements, lowStockProducts, weeklyMovements };

@@ -24,7 +24,7 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        sans: var(--font-sans),\nTypeScript
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       },
     },
   },
